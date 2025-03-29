@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PasswordStrengthChecker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9ebe8e17a48ba0c4fd6743a0436d239a28287f24")]
 [assembly: System.Reflection.AssemblyProductAttribute("PasswordStrengthChecker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PasswordStrengthChecker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

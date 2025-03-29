@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
+using System.Reflection;
 
 namespace PasswordStrengthChecker
 {
@@ -8,82 +7,95 @@ namespace PasswordStrengthChecker
     {
         static void Main(string[] args)
         {
+            HashSet<string> weakPasswords = new HashSet<string>(); //Creates new HashSet "weakPasswords"
+
+            string weakPasswordList = "PasswordStrengthChecker.500-worst-passwords.txt"; //The text file containing our list of weak passwords
+
+            Assembly assembly = Assembly.GetExecutingAssembly(); //Retrieves a reference to the assembly
+
+            using (Stream stream = assembly.GetManifestResourceStream(weakPasswordList)) //Retrieves list of weak passwords
+            {
+                if (stream == null) //If no list is found
+                {
+                    Console.WriteLine("Resource not found!");
+                    return;
+                }
+
+                using (StreamReader reader = new StreamReader(stream)) //Reads the list line by line
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null) //Adds the current line to our HashSet "weakPasswords"
+                    {
+                        weakPasswords.Add(line); 
+                    }
+                }
+            }
+
             Console.WriteLine("This is a password strength checker."); 
             Console.WriteLine("Enter a password and find out how strong it is: ");
 
-            string password = Console.ReadLine(); //Stores user input as "password"
+            string userPassword = Console.ReadLine(); //Stores user input as "password"
 
-            int strength = 0; //Storage for "password strength score"
-            //Check length of input
-            if (password.Length >= 8) //if "password" is greater than or equal to 8 characters
-            {
-                strength++; //Assigns a point
-            }
-            
-            if (password.Length >= 12) //if "password" is great than or equal to 12 characters
-            {
-                strength++; //Assigns a point
-            }
+            int passwordStrength = 0; //Storage for "password strength score"
 
-            if (password.Length > 12) //if "password" is greater than 12 characters
+            //Check password length
+            if (userPassword.Length > 8) //if password is greater than 8 characters
             {
-                strength++; //Assigns a point
+                passwordStrength++; //Assigns a point
+
+                if (userPassword.Length > 12) //if password is greater than 12 characters
+                {
+                    passwordStrength++; //Assigns a point
+                }
             }
 
             //Check variety of input
-            if (password.Any(char.IsUpper)) //if "password" has uppercase character
+            if (userPassword.Any(char.IsUpper)) //if "password" has uppercase character
             {
-                strength++; //Assigns a point
+                passwordStrength++; //Assigns a point
             }
 
-            if (password.Any(char.IsLower)) //if "password" has lowercase character
+            if (userPassword.Any(char.IsLower)) //if "password" has lowercase character
             {
-                strength++; //Assigns a point
+                passwordStrength++; //Assigns a point
             }
 
-            if (password.Any(char.IsDigit)) //if "password" has numbers
+            if (userPassword.Any(char.IsDigit)) //if "password" has numbers
             {
-                strength++; 
+                passwordStrength++; //Assigns a point
             }
 
-            if (password.Any(ch => !char.IsLetterOrDigit(ch))) //if "password" has special characters
+            if (userPassword.Any(ch => !char.IsLetterOrDigit(ch))) //if "password" has special characters
             {
-                strength++; //Assigns a point
+                passwordStrength++; //Assigns a point
             }
 
-            string[] weakPasswords = { "123456", "password", "123456789", "qwerty", "abc123", "111111", "12345678", "admin", "letmein", "welcome", "football", "12345", "1234", "2025", "baseball", "superman", "princess", "dragon", "harrypotter", "starwars", "iloveyou", "123", "master", "sunshine", "password123" };
-            //Compare input against list
-            if (string.IsNullOrEmpty(password))
+            //Comparison check
+            if (!weakPasswords.Contains(userPassword.ToLower())) //if "password" not found in weakPasswords list
             {
-                Console.WriteLine("Invalid (Empty Password)"); //Lacking user input
-            }
-
-            if (!weakPasswords.Contains(password.ToLower())) //if "password" not found in list
-            {
-                strength++; //Assigns a point
+                passwordStrength++; //Assigns a point
             }
             else
             {
-                strength = 0;
+                passwordStrength = 0; //Sets points to zero
             }
 
-            if (strength == 7 || strength == 6)
+            if (passwordStrength >= 6) //If points amount to 6 or greater
             {
-                Console.WriteLine("Password Strength: Strong"); //Output rating
+                Console.WriteLine("Password Strength: Strong");
             }
-            else if (strength == 5 || strength == 4)
+            else if (passwordStrength == 5 || passwordStrength == 4) //If points amount to either 5 or 4
             {
-                Console.WriteLine("Password Strength: Moderate"); //Output rating
+                Console.WriteLine("Password Strength: Moderate");
             }
-            else if (strength == 2 || strength == 3)
+            else if (passwordStrength == 2 || passwordStrength == 3) //If points amount to either 2 or 3
             {
-                Console.WriteLine("Password Strength: Weak"); //Output rating
+                Console.WriteLine("Password Strength: Weak");
             }
             else
             {
-                Console.WriteLine("Password Strength: Very Weak"); //Output rating
+                Console.WriteLine("Password Strength: Very Weak");
             }
-        }           
+        }
     }
 }
-
